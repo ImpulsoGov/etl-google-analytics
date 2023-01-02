@@ -14,7 +14,7 @@ from google.analytics.data_v1beta.types import (
 
 
 def credenciais_api_ga4(variaveis: dict):
-    " Credenciais do Google Analytics"
+    "Credenciais do Google Analytics."
     for credenciais_dicionario in variaveis["credenciais_api"]:
         with open("GA4-ImpulsoGov-Credenciais.json", "w") as jsonfile:
             jsonio.dump(credenciais_dicionario, jsonfile)
