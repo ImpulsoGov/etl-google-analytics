@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: 2021, 2022 ImpulsoGov <contato@impulsogov.org>
+#
+# SPDX-License-Identifier: MIT
+
+
+name: Cria imagem Docker e publica - ImpulsoGAETL
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_SENHA: ${{secrets.DOCKER_SENHA}}
+      run: docker login -u $DOCKER_USER -p $DOCKER_SENHA
+    - name: Construir imagem do ImpulsoGAETL 
+      run: docker build -t impulsogov/impulsoetlga:latest .
+
+    - name: Enviar imagem do GAETL
+      run: docker push impulsogov/impulsoetlga
+
+    - name: Executa imagem docker
+
+      env:
+        GAETL_BD_HOST: ${{secrets.GAETL_BD_HOST}}
+        GAETL_BD_PORTA: ${{secrets.GAETL_BD_PORTA}}
+        GAETL_BD_NOME: ${{secrets.GAETL_BD_NOME}}
+        GAETL_BD_USUARIO: ${{secrets.GAETL_BD_USUARIO}}
+        GAETL_BD_SENHA: ${{secrets.GAETL_BD_SENHA}}
+      run: >
+        docker run
+        -e GAETL_BD_HOST
+        -e GAETL_BD_PORTA
+        -e GAETL_BD_NOME
+        -e GAETL_BD_USUARIO
+        -e GAETL_BD_SENHA
+        impulsogov/impulsoetlga:latest 

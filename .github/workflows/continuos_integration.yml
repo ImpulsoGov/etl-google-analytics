@@ -1,0 +1,43 @@
+name: Continuos Integration
+on: [push]
+jobs: 
+  format_and_test:
+    runs-on: ubuntu-latest
+    steps:
+        
+        - name: Instala o Python 3.10.6
+          uses: actions/setup-python@v2
+          with:
+              python-version: 3.10.6
+        
+        - name: Realiza o checkout do repository
+          uses: actions/checkout@v2
+
+        - name: Instala Poetry
+          uses: snok/install-poetry@v1
+          with:
+              virtualenvs-in-project: true
+
+        - name: Carregar cached venv
+          id: cached-poetry-dependencies 
+          uses: actions/cache@v2
+          with: 
+              path: .venv
+              key: venv-${{ hashFiles('**/poetry.lock') }}
+        
+        - name: Instala depedencias
+          if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+          run: poetry install --no-interaction
+
+        - name: Formata o código
+          run: poetry run make format
+        
+        - name: Executa os testes unitários
+          run: poetry run make test
+
+    env:
+        GAETL_BD_HOST: ${{secrets.GAETL_BD_HOST}}
+        GAETL_BD_PORTA: ${{secrets.GAETL_BD_PORTA}}
+        GAETL_BD_NOME: ${{secrets.GAETL_BD_NOME}}
+        GAETL_BD_USUARIO: ${{secrets.GAETL_BD_USUARIO}}
+        GAETL_BD_SENHA: ${{secrets.GAETL_BD_SENHA}}

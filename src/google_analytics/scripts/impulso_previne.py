@@ -44,7 +44,3 @@ def principal(sessao: Session, teste: bool = False) -> None:
 
     # Lista de relatórios do GA4 para operação de ETL
     relatorio_ga4_quickstart(sessao=sessao, teste=teste)
-
-
-
-
