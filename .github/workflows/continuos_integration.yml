@@ -34,3 +34,10 @@ jobs:
         
         - name: Run tests
           run: poetry run make test
+
+    env:
+        GAETL_BD_HOST: ${{secrets.GAETL_BD_HOST}}
+        GAETL_BD_PORTA: ${{secrets.GAETL_BD_PORTA}}
+        GAETL_BD_NOME: ${{secrets.GAETL_BD_NOME}}
+        GAETL_BD_USUARIO: ${{secrets.GAETL_BD_USUARIO}}
+        GAETL_BD_SENHA: ${{secrets.GAETL_BD_SENHA}}
