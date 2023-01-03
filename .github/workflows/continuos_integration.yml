@@ -26,7 +26,7 @@ jobs:
               key: venv-${{ hashFiles('**/poetry.lock') }}
         
         - name: Install depedencies
-          if: step.cached-poetry-dependencies.outputs.cache-hit != 'true'
+          if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
           run: poetry install --no-interaction
 
         - name: Lint
