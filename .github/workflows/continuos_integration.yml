@@ -14,15 +14,25 @@ jobs:
           uses: actions/checkout@v2
 
         - name: Instala Poetry
-          uses: Gr1N/setup-poetry@v4
+          uses: snok/install-poetry@v1
+          with:
+              virtualenvs-in-project: true
 
-        - name: Instalar dependencias
-          run: poetry install 
+        - name: Carregar cached venv
+          id: cached-poetry-dependencies 
+          uses: actions/cache@v2
+          with: 
+              path: .venv
+              key: venv-${{ hashFiles('**/poetry.lock') }}
+        
+        - name: Instala depedencias
+          if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+          run: poetry install --no-interaction
 
-        - name: Format
+        - name: Formata o código
           run: poetry run make format
         
-        - name: Run tests
+        - name: Executa os testes unitários
           run: poetry run make test
 
     env:
